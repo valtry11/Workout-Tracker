@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Workout Tracker</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+:root {
+  --bg: #f4f6fa;
+  --card: #ffffff;
+  --text: #1b2433;
+  --muted: #667085;
+  --line: #e3e8ef;
+  --brand: #2563eb;
+  --brand-dark: #1d4ed8;
+  --soft: #eaf1ff;
+  --danger: #dc2626;
+  --ok: #16a34a;
+
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e131b;
+    --card: #171e29;
+    --text: #e8edf5;
+    --muted: #93a0b4;
+    --line: #283142;
+    --brand: #5b8dff;
+    --brand-dark: #7aa2ff;
+    --soft: #1c2740;
+    --danger: #f87171;
+    --ok: #4ade80;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e131b;
+  --card: #171e29;
+  --text: #e8edf5;
+  --muted: #93a0b4;
+  --line: #283142;
+  --brand: #5b8dff;
+  --brand-dark: #7aa2ff;
+  --soft: #1c2740;
+  --danger: #f87171;
+  --ok: #4ade80;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+h2 {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+}
+
+.wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.hide {
+  display: none;
+}
+
+header {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+
+.top {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.top h1 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--brand);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+nav {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+nav button {
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 12px 14px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+nav button.on {
+  color: var(--brand);
+  border-color: var(--brand);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.stat,
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.stat b {
+  display: block;
+  font-size: 1.5rem;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Phone: stack the cards in one column */
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 10px 0 4px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.search {
+  margin-bottom: 14px;
+}
+
+.btn {
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--brand);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 14px;
+}
+
+.btn:hover {
+  background: var(--brand-dark);
+}
+
+.btn.alt {
+  background: var(--soft);
+  color: var(--brand);
+}
+
+.btn.del {
+  background: none;
+  color: var(--danger);
+  padding: 4px 8px;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.msg {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  display: none;
+}
+
+.msg.err {
+  display: block;
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--danger);
+}
+
+.msg.ok {
+  display: block;
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--ok);
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.item:last-child {
+  border: 0;
+}
+
+.item small {
+  color: var(--muted);
+  display: block;
+}
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--soft);
+  color: var(--brand);
+  margin-left: 6px;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 24px 8px;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.wk {
+  margin-bottom: 16px;
+}
+
+.wkhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.big {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="logo">T</div>
+    <div><h1>Workout Tracker</h1><p>Triosphere · OOP Project</p></div>
+  </div>
+  <nav>
+    <button class="on" data-tab="log">Log workout</button>
+    <button data-tab="history">History</button>
+    <button data-tab="records">Personal records</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="stats" id="stats"></section>
+
+  <section id="tab-log" class="grid">
+    <div class="card">
+      <h2>1. Add an exercise</h2>
+      <label for="type">Exercise type</label>
+      <select id="type">
+        <option value="strength">Strength (sets, reps, weight)</option>
+        <option value="cardio">Cardio (minutes, distance)</option>
+      </select>
+      <label for="name">Exercise name</label>
+      <input id="name" placeholder="e.g. Bench press" maxlength="40">
+      <div id="strengthFields" class="row">
+        <div><label for="sets">Sets</label><input id="sets" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="reps">Reps</label><input id="reps" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="weight">Weight (kg)</label><input id="weight" type="number" inputmode="decimal" min="0" step="0.5"></div>
+      </div>
+      <div id="cardioFields" class="row2 hide">
+        <div><label for="minutes">Minutes</label><input id="minutes" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="distance">Distance (km)</label><input id="distance" type="number" inputmode="decimal" min="0" step="0.1"></div>
+      </div>
+      <button class="btn alt" id="addEx">Add exercise</button>
+      <div class="msg" id="exMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2>2. Save the workout</h2>
+      <label for="date">Date</label>
+      <input id="date" type="date">
+      <div id="draft" style="margin-top:12px"></div>
+      <button class="btn" id="saveWk">Save workout</button>
+      <div class="msg" id="wkMsg"></div>
+    </div>
+  </section>
+
+  <section id="tab-history" class="hide">
+    <input class="search" id="search" type="search" placeholder="Search by date or exercise name">
+    <div id="historyList"></div>
+  </section>
+
+  <section id="tab-records" class="hide grid"></section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
